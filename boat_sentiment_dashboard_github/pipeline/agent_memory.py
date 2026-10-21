@@ -14,14 +14,30 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-DB_PATH = Path("data/runs.db")
-OUTPUTS_DIR = Path("outputs")
+def _resolve_paths():
+    # Try finding data/ directory from file location or current working dir
+    for base in [
+        Path(__file__).resolve().parent.parent,
+        Path(__file__).resolve().parent.parent.parent,
+        Path.cwd(),
+        Path.cwd().parent,
+    ]:
+        cand_db = base / "data" / "runs.db"
+        cand_dir = base / "data"
+        if cand_db.exists():
+            return cand_db, base / "outputs"
+        if cand_dir.exists():
+            return cand_db, base / "outputs"
+    return Path(__file__).resolve().parent.parent / "data" / "runs.db", Path(__file__).resolve().parent.parent / "outputs"
+
+DB_PATH, OUTPUTS_DIR = _resolve_paths()
 
 
-def init_db(db_path: Path = DB_PATH) -> None:
+def init_db(db_path: Path = None) -> None:
     """Initializes runs and pending_alerts tables if not already present."""
-    db_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(db_path) as conn:
+    path = db_path or DB_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(path) as conn:
         cursor = conn.cursor()
         cursor.execute(
             """

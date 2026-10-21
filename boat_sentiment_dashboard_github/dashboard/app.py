@@ -399,68 +399,70 @@ st.markdown("""
 agent_col1, agent_col2 = st.columns([1.2, 1.8])
 
 with agent_col1:
-    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-    st.markdown("#### 🛡️ Active Anomaly Escalations")
-    pending_alerts = list_pending_alerts()
-    if pending_alerts:
-        for al in pending_alerts:
-            sev_color = "#ff1744" if al.get("severity") in ["HIGH", "CRITICAL"] else "#ff9100"
-            st.markdown(
-                f"""
-                <div style="border-left: 4px solid {sev_color}; padding: 10px 14px; background: rgba(255,23,68,0.1); border-radius: 8px; margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 700; color: {sev_color}; font-size: 0.85rem;">{al.get('alert_id')}</span>
-                        <span style="background: {sev_color}; color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">{al.get('severity')}</span>
+    with st.container(border=True):
+        st.markdown("#### 🛡️ Active Anomaly Escalations")
+        pending_alerts = list_pending_alerts()
+        if pending_alerts:
+            for al in pending_alerts:
+                sev_color = "#ff1744" if al.get("severity") in ["HIGH", "CRITICAL"] else "#ff9100"
+                st.markdown(
+                    f"""
+                    <div style="border-left: 4px solid {sev_color}; padding: 12px 14px; background: rgba(255,23,68,0.12); border-radius: 8px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 700; color: {sev_color}; font-size: 0.88rem;">{al.get('alert_id')}</span>
+                            <span style="background: {sev_color}; color: #fff; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">{al.get('severity')}</span>
+                        </div>
+                        <div style="font-size: 0.84rem; margin-top: 6px; color: #f1f5f9; line-height: 1.4;">{al.get('reason')}</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 6px;">Created: {al.get('timestamp')[:19].replace('T', ' ')}</div>
                     </div>
-                    <div style="font-size: 0.82rem; margin-top: 6px; color: #f1f5f9;">{al.get('reason')}</div>
-                    <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">Created: {al.get('timestamp')[:19]}</div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if al.get("metrics"):
+                    with st.expander("📊 Supporting Telemetry & Metrics", expanded=False):
+                        st.json(al["metrics"])
+
+                btn_col1, btn_col2 = st.columns(2)
+                with btn_col1:
+                    if st.button("✅ Approve Alert", key=f"app_{al['alert_id']}", use_container_width=True):
+                        update_alert_status(al["alert_id"], "APPROVED")
+                        st.success(f"Alert {al['alert_id']} Approved!")
+                        st.rerun()
+                with btn_col2:
+                    if st.button("❌ Dismiss", key=f"rej_{al['alert_id']}", use_container_width=True):
+                        update_alert_status(al["alert_id"], "REJECTED")
+                        st.info(f"Alert {al['alert_id']} Dismissed.")
+                        st.rerun()
+        else:
+            st.markdown(
+                """
+                <div style="padding: 20px; background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.3); border-radius: 12px; text-align: center;">
+                    <div style="font-size: 1.8rem;">🟢</div>
+                    <div style="font-weight: 700; color: #00e676; margin-top: 6px; font-size: 1rem;">All Systems Nominal</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">No critical hardware anomalies requiring human approval.</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            btn_col1, btn_col2 = st.columns(2)
-            with btn_col1:
-                if st.button("✅ Approve Alert", key=f"app_{al['alert_id']}", use_container_width=True):
-                    update_alert_status(al["alert_id"], "APPROVED")
-                    st.success(f"Alert {al['alert_id']} Approved!")
-                    st.rerun()
-            with btn_col2:
-                if st.button("❌ Dismiss", key=f"rej_{al['alert_id']}", use_container_width=True):
-                    update_alert_status(al["alert_id"], "REJECTED")
-                    st.info(f"Alert {al['alert_id']} Dismissed.")
-                    st.rerun()
-    else:
-        st.markdown(
-            """
-            <div style="padding: 16px; background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.3); border-radius: 12px; text-align: center;">
-                <div style="font-size: 1.6rem;">🟢</div>
-                <div style="font-weight: 700; color: #00e676; margin-top: 4px;">All Systems Nominal</div>
-                <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 4px;">No critical anomalies requiring human approval.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    st.markdown('</div>', unsafe_allow_html=True)
 
 with agent_col2:
-    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-    st.markdown("#### 🧠 Agent Memory (Temporal Run History from SQLite)")
-    run_history = get_run_history(limit=5)
-    if run_history:
-        history_rows = []
-        for r in run_history:
-            history_rows.append({
-                "Run ID": r["run_id"],
-                "Timestamp": r["timestamp"][:16].replace("T", " "),
-                "Reviews": f"{r['n_reviews']:,}",
-                "Positive %": f"{r['pct_positive']}%",
-                "Negative %": f"{r['pct_negative']}%",
-                "Alerts": r.get("alerts_count", 0),
-            })
-        st.dataframe(pd.DataFrame(history_rows), use_container_width=True, hide_index=True)
-    else:
-        st.info("No prior run history in runs.db yet. Establishing baseline.")
-    st.markdown('</div>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("#### 🧠 Agent Memory (Temporal Run History from SQLite)")
+        run_history = get_run_history(limit=6)
+        if run_history:
+            history_rows = []
+            for r in run_history:
+                history_rows.append({
+                    "Run ID": r["run_id"],
+                    "Timestamp": r["timestamp"][:16].replace("T", " "),
+                    "Reviews": f"{r['n_reviews']:,}",
+                    "Positive %": f"{r['pct_positive']}%",
+                    "Negative %": f"{r['pct_negative']}%",
+                    "Alerts": r.get("alerts_count", 0),
+                })
+            st.dataframe(pd.DataFrame(history_rows), use_container_width=True, hide_index=True)
+        else:
+            st.info("No prior run history in runs.db yet. Establishing baseline.")
 
 st.divider()
 

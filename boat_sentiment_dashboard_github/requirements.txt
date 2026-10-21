@@ -7,3 +7,4 @@ nltk
 google-genai
 google-play-scraper
 python-dotenv
+anthropic

@@ -17,3 +17,6 @@ service_account*.json
 
 # Logs & temporary runtime outputs
 logs/*.log
+*.db
+outputs/*_20*.*
+outputs/*eval*.*

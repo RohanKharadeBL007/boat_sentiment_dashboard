@@ -1,0 +1,9 @@
+=== PENDING ALERTS (AWAITING HUMAN APPROVAL) ===
+[PENDING_APPROVAL] Alert ID: ALT-eval_neg_spike-01 | Severity: HIGH | Run: eval_neg_spike
+Reason: Severe negative sentiment spike (90.91%) detected in hardware reviews.
+Timestamp: 2026-10-21T19:14:51.751371
+------------------------------------------------------------
+[PENDING_APPROVAL] Alert ID: ALT-test_multi_agent-01 | Severity: HIGH | Run: test_multi_agent
+Reason: Review ingestion dropped by 100.0% compared to baseline. | Negative sentiment spiked by +18.39% (from 21.61% to 40.0%).
+Timestamp: 2026-10-21T19:14:11.212234
+------------------------------------------------------------

@@ -184,8 +184,19 @@ def main():
         type=str,
         help="Reject / dismiss a drafted escalation alert",
     )
+    # Legacy pipeline compatibility flags (e.g. used by GitHub Actions / automated scripts)
+    parser.add_argument("--n_topics", type=int, default=6, help="Number of topics for topic modeling")
+    parser.add_argument("--min_df", type=int, default=5, help="Minimum document frequency for topic modeling")
+    parser.add_argument("--sentiment_method", default="vader", choices=["vader", "transformer"])
+    parser.add_argument("--insight_backend", default="auto", choices=["auto", "claude", "gemini"])
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
+    if unknown:
+        log.warning(f"Ignored unrecognized arguments: {unknown}")
+
+    # Map legacy insight_backend to backend if specified
+    if args.insight_backend != "auto" and args.backend == "auto":
+        args.backend = args.insight_backend
 
     # If handling alert actions, process and exit
     if handle_alerts_cli(args):

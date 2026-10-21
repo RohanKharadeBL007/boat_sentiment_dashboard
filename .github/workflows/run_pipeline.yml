@@ -1,9 +1,5 @@
 name: Automated Sentiment Pipeline Run
 
-# Runs the orchestrator automatically:
-#  - on a daily schedule (cron)
-#  - on every push to main (so you see fresh output when you push new scraper data)
-#  - manually via the "Run workflow" button in the GitHub Actions tab
 on:
   schedule:
     - cron: "0 3 * * *"   # daily at 03:00 UTC
@@ -11,7 +7,11 @@ on:
     branches: [main]
     paths:
       - "data/**"
+      - "boat_sentiment_dashboard_github/data/**"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   run-pipeline:
@@ -27,24 +27,33 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas numpy scikit-learn nltk vaderSentiment anthropic
+          pip install pandas numpy scikit-learn nltk vaderSentiment anthropic streamlit plotly python-dotenv
 
-      - name: Run orchestrator (dry-run: uses committed data/*.csv)
-        # Scraping live sites from GitHub-hosted runners is unreliable
-        # (bot detection, IP blocks) and against most sites' ToS to run
-        # on a schedule from shared infrastructure. Recommended pattern:
-        # scrape locally / on a self-hosted runner, commit the CSVs to
-        # data/, and let this workflow handle preprocessing -> sentiment
-        # -> topics -> GenAI summary -> dashboard-ready output.
+      - name: Run AI Agent Orchestrator (dry-run)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: |
-          python orchestrator.py --dry-run --n_topics 6 --min_df 2
+          if [ -f "orchestrator.py" ]; then
+            python orchestrator.py --dry-run --n_topics 6 --min_df 2
+          elif [ -f "boat_sentiment_dashboard_github/orchestrator.py" ]; then
+            cd boat_sentiment_dashboard_github
+            python orchestrator.py --dry-run --n_topics 6 --min_df 2
+          fi
+
+      - name: Run Agent Eval Harness
+        run: |
+          if [ -f "eval_harness.py" ]; then
+            python eval_harness.py
+          elif [ -f "boat_sentiment_dashboard_github/eval_harness.py" ]; then
+            cd boat_sentiment_dashboard_github
+            python eval_harness.py
+          fi
 
       - name: Commit updated outputs
         run: |
           git config user.name "sentiment-pipeline-bot"
           git config user.email "actions@github.com"
-          git add outputs/ logs/
+          git add outputs/ logs/ boat_sentiment_dashboard_github/outputs/ 2>/dev/null || true
           git diff --staged --quiet || git commit -m "Automated pipeline run [skip ci]"
           git push

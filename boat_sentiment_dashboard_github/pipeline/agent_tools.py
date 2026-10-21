@@ -473,7 +473,13 @@ def tool_save_final_report(state: AgentSessionState) -> Dict[str, Any]:
     df.to_csv(latest_path, index=False)
 
     # 2. Generate and save executive summary
-    summary_text = generate_executive_summary(df, backend="gemini")
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        summary_backend = "claude"
+    elif os.environ.get("GOOGLE_API_KEY"):
+        summary_backend = "gemini"
+    else:
+        summary_backend = "gemini"
+    summary_text = generate_executive_summary(df, backend=summary_backend)
     state.executive_summary = summary_text
 
     summary_path = OUTPUT_DIR / f"executive_summary_{run_id}.txt"

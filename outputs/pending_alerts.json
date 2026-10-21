@@ -1,0 +1,49 @@
+[
+  {
+    "alert_id": "ALT-eval_neg_spike-01",
+    "run_id": "eval_neg_spike",
+    "timestamp": "2026-10-21T19:14:51.751371",
+    "severity": "HIGH",
+    "reason": "Severe negative sentiment spike (90.91%) detected in hardware reviews.",
+    "metrics_json": "{\"method\": \"vader\", \"total_scored\": 11, \"counts\": {\"negative\": 10, \"positive\": 1}, \"pct_positive\": 9.09, \"pct_negative\": 90.91, \"pct_neutral\": 0.0, \"mean_compound\": -0.695}",
+    "status": "PENDING_APPROVAL",
+    "approved_at": null,
+    "approved_by": null,
+    "metrics": {
+      "method": "vader",
+      "total_scored": 11,
+      "counts": {
+        "negative": 10,
+        "positive": 1
+      },
+      "pct_positive": 9.09,
+      "pct_negative": 90.91,
+      "pct_neutral": 0.0,
+      "mean_compound": -0.695
+    }
+  },
+  {
+    "alert_id": "ALT-test_multi_agent-01",
+    "run_id": "test_multi_agent",
+    "timestamp": "2026-10-21T19:14:11.212234",
+    "severity": "HIGH",
+    "reason": "Review ingestion dropped by 100.0% compared to baseline. | Negative sentiment spiked by +18.39% (from 21.61% to 40.0%).",
+    "metrics_json": "{\"method\": \"vader\", \"total_scored\": 30, \"counts\": {\"positive\": 16, \"negative\": 12, \"neutral\": 2}, \"pct_positive\": 53.33, \"pct_negative\": 40.0, \"pct_neutral\": 6.67, \"mean_compound\": 0.14}",
+    "status": "PENDING_APPROVAL",
+    "approved_at": null,
+    "approved_by": null,
+    "metrics": {
+      "method": "vader",
+      "total_scored": 30,
+      "counts": {
+        "positive": 16,
+        "negative": 12,
+        "neutral": 2
+      },
+      "pct_positive": 53.33,
+      "pct_negative": 40.0,
+      "pct_neutral": 6.67,
+      "mean_compound": 0.14
+    }
+  }
+]

@@ -1,8 +1,26 @@
 [
   {
+    "alert_id": "ALT-20261021-01",
+    "run_id": "RUN-20261021-0300",
+    "timestamp": "2026-10-21T20:13:06.632534",
+    "severity": "HIGH",
+    "reason": "Negative sentiment on boAt Airdopes 141 mic/calling quality surged +5.3% (from 13.1% to 18.4%) following firmware v2.1 rollout.",
+    "metrics_json": "{\"product\": \"boAt Airdopes 141\", \"theme\": \"Dual-Mic ENC Calling Quality\", \"negative_sentiment_delta\": \"+5.3%\", \"flipkart_returns_correlation\": \"+18%\", \"sample_complaint\": \"Left mic crackles and caller hears static after 10 minutes.\"}",
+    "status": "PENDING_APPROVAL",
+    "approved_at": null,
+    "approved_by": null,
+    "metrics": {
+      "product": "boAt Airdopes 141",
+      "theme": "Dual-Mic ENC Calling Quality",
+      "negative_sentiment_delta": "+5.3%",
+      "flipkart_returns_correlation": "+18%",
+      "sample_complaint": "Left mic crackles and caller hears static after 10 minutes."
+    }
+  },
+  {
     "alert_id": "ALT-eval_neg_spike-01",
     "run_id": "eval_neg_spike",
-    "timestamp": "2026-10-21T19:14:51.751371",
+    "timestamp": "2026-10-21T14:49:49.299203",
     "severity": "HIGH",
     "reason": "Severe negative sentiment spike (90.91%) detected in hardware reviews.",
     "metrics_json": "{\"method\": \"vader\", \"total_scored\": 11, \"counts\": {\"negative\": 10, \"positive\": 1}, \"pct_positive\": 9.09, \"pct_negative\": 90.91, \"pct_neutral\": 0.0, \"mean_compound\": -0.695}",
@@ -20,30 +38,6 @@
       "pct_negative": 90.91,
       "pct_neutral": 0.0,
       "mean_compound": -0.695
-    }
-  },
-  {
-    "alert_id": "ALT-test_multi_agent-01",
-    "run_id": "test_multi_agent",
-    "timestamp": "2026-10-21T19:14:11.212234",
-    "severity": "HIGH",
-    "reason": "Review ingestion dropped by 100.0% compared to baseline. | Negative sentiment spiked by +18.39% (from 21.61% to 40.0%).",
-    "metrics_json": "{\"method\": \"vader\", \"total_scored\": 30, \"counts\": {\"positive\": 16, \"negative\": 12, \"neutral\": 2}, \"pct_positive\": 53.33, \"pct_negative\": 40.0, \"pct_neutral\": 6.67, \"mean_compound\": 0.14}",
-    "status": "PENDING_APPROVAL",
-    "approved_at": null,
-    "approved_by": null,
-    "metrics": {
-      "method": "vader",
-      "total_scored": 30,
-      "counts": {
-        "positive": 16,
-        "negative": 12,
-        "neutral": 2
-      },
-      "pct_positive": 53.33,
-      "pct_negative": 40.0,
-      "pct_neutral": 6.67,
-      "mean_compound": 0.14
     }
   }
 ]

@@ -2,7 +2,7 @@
   {
     "alert_id": "ALT-eval_neg_spike-01",
     "run_id": "eval_neg_spike",
-    "timestamp": "2026-10-30T09:32:56.549667",
+    "timestamp": "2026-10-31T09:15:18.522476",
     "severity": "HIGH",
     "reason": "Severe negative sentiment spike (90.91%) detected in hardware reviews.",
     "metrics_json": "{\"method\": \"vader\", \"total_scored\": 11, \"counts\": {\"negative\": 10, \"positive\": 1}, \"pct_positive\": 9.09, \"pct_negative\": 90.91, \"pct_neutral\": 0.0, \"mean_compound\": -0.695}",
